@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="index.css">
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
+  <title>Valentine Letter</title>
+</head>
+<body>
+
+    <audio id="bg-music" autoplay loop>
+  <source src="love.mp3" type="audio/mpeg">
+</audio>
+
+  <div class="page">
+    <div class="bg"></div>
+<div class="bg"></div>
+<div class="bg"></div>
+<div class="bg"></div>
+    <button id="music-btn" class="music-btn" onclick="toggleMusic()">🔊</button>
+    <!-- Falling Hearts Background -->
+  <div class="hearts-bg"></div>
+    <h1 class="title">To My Favorite Human</h1>
+    <p class="subtitle">a special message awaits you</p>
+    
+
+    <div class="envelope-card">
+  <div class="env-top"></div>
+
+  <div class="env-content">
+    <div class="heart">
+      <img src="Heart.png" alt="Heart">
+    </div>
+
+    <button class="open-btn" onclick="openLetter()">Tap to Open</button>
+  </div>
+
+  <div class="env-flaps">
+    <div class="flap-left"></div>
+    <div class="flap-right"></div>
+  </div>
+</div>
+<div class="letter-overlay" id="letter">
+  <div class="letter-box">
+    <button class="close-btn" onclick="closeLetter()">✕</button>
+
+    <h2>My Love,</h2>
+
+    <p>
+      Every moment spent with you feels like a beautiful dream come true.
+Your smile lights up my world in ways words could never fully describe.
+
+I am endlessly grateful that you came into my life and helped shape me into the man I am today. Thank you for standing by me through my ups and downs, for believing in me, and for loving me even on my hardest days.
+
+I hope one day I will be the man who walks you down the aisle, looks into your eyes, and proudly says, “I do.”
+
+I love you to the stars and back, my love.
+Will you be my forever Valentine? ❤️
+    </p>
+    <div class="slideshow" id="slideshow">
+  <button class="slide-btn prev" type="button" onclick="prevSlide()">‹</button>
+
+  <div class="slides">
+    <img class="slide active" src="15.jpg" alt="Photo 1">
+    <img class="slide" src="2nd.jpg" alt="Photo 2">
+    <img class="slide" src="3rd.jpg" alt="Photo 3">
+    <img class="slide" src="4th.jpg" alt="Photo 4">
+    <img class="slide" src="5th.jpg" alt="Photo 5">
+    <img class="slide" src="6th.jpg" alt="Photo 6">
+    <img class="slide" src="7th.jpg" alt="Photo 7">
+    <img class="slide" src="8th.jpg" alt="Photo 8">
+    <img class="slide" src="9th.jpg" alt="Photo 9">
+    <img class="slide" src="10.jpg" alt="Photo 10">
+    <img class="slide" src="11.jpg" alt="Photo 11">
+    <img class="slide" src="12.jpg" alt="Photo 12">
+    <img class="slide" src="13.jpg" alt="Photo 13">
+    <img class="slide" src="14.jpg" alt="Photo 14">
+    <img class="slide" src="16.jpg" alt="Photo 16">
+    <img class="slide" src="17.jpg" alt="Photo 17">
+    <img class="slide" src="19.jpg" alt="Photo 19">
+    <img class="slide" src="20.jpg" alt="Photo 20">
+    <img class="slide" src="21.jpg" alt="Photo 21">
+    <img class="slide" src="22.jpg" alt="Photo 22">
+    <img class="slide" src="23.jpg" alt="Photo 23">
+    <img class="slide" src="24.jpg" alt="Photo 24">
+    <img class="slide" src="25.jpg" alt="Photo 25">
+    <img class="slide" src="1st.jpg" alt="Photo 1">
+  </div>
+
+  <button class="slide-btn next" type="button" onclick="nextSlide()">›</button>
+
+  <div class="dots" id="dots"></div>
+</div>
+
+    <p class="signature">
+      With all my love,<br>
+      <strong>Forever Yours ❤️</strong>
+    </p>
+
+    <button class="close-letter-btn" onclick="closeLetter()">Close Letter</button>
+  </div>
+</div>
+    <div class="footer">
+    <h2 class="Opentext">OPEN YOUR HEART</h2>
+    <h3 class="textagain">HAPPY VALENTINE'S DAY 2026</h3>
+  </div>
+  </div>
+  <script>
+  const bg = document.querySelector(".hearts-bg");
+
+  function spawnHeart(){
+    const heart = document.createElement("div");
+    heart.className = "heart-fall";
+    heart.textContent = "❤";
+
+    heart.style.left = Math.random() * 100 + "vw";
+
+    const size = 12 + Math.random() * 22;
+    heart.style.fontSize = size + "px";
+
+    const duration = 6 + Math.random() * 6;
+    heart.style.animationDuration = `${duration}s, ${2 + Math.random() * 2}s`;
+
+    heart.style.opacity = (0.4 + Math.random() * 0.6).toFixed(2);
+
+    bg.appendChild(heart);
+
+    setTimeout(() => heart.remove(), (duration + 2) * 1000);
+  }
+
+  for (let i = 0; i < 15; i++) spawnHeart();
+  setInterval(spawnHeart, 400);
+</script>
+
+<script>
+  let slideIndex = 0;
+  let slideTimer = null;
+
+  function setupSlideshow(){
+    const slides = document.querySelectorAll(".slide");
+    const dotsWrap = document.getElementById("dots");
+    dotsWrap.innerHTML = "";
+
+    slides.forEach((_, i) => {
+      const b = document.createElement("button");
+      b.className = "dot" + (i === 0 ? " active" : "");
+      b.type = "button";
+      b.addEventListener("click", () => goToSlide(i));
+      dotsWrap.appendChild(b);
+    });
+
+    startAuto();
+  }
+
+  function showSlide(i){
+    const slides = document.querySelectorAll(".slide");
+    const dots = document.querySelectorAll(".dot");
+    if (!slides.length) return;
+
+    slideIndex = (i + slides.length) % slides.length;
+
+    slides.forEach(s => s.classList.remove("active"));
+    dots.forEach(d => d.classList.remove("active"));
+
+    slides[slideIndex].classList.add("active");
+    dots[slideIndex].classList.add("active");
+  }
+
+  function nextSlide(){ showSlide(slideIndex + 1); restartAuto(); }
+  function prevSlide(){ showSlide(slideIndex - 1); restartAuto(); }
+  function goToSlide(i){ showSlide(i); restartAuto(); }
+
+  function startAuto(){
+    stopAuto();
+    slideTimer = setInterval(() => showSlide(slideIndex + 1), 3000); // 3s
+  }
+  function stopAuto(){
+    if (slideTimer) clearInterval(slideTimer);
+    slideTimer = null;
+  }
+  function restartAuto(){
+    startAuto();
+  }
+
+  // Call this once when the page loads
+  window.addEventListener("load", setupSlideshow);
+
+  // Optional: pause autoplay when letter is closed, restart when opened
+  function openLetter(){
+    document.getElementById("letter").classList.add("active");
+    startAuto();
+     const music = document.getElementById("bg-music");
+    music.play();
+    // (keep your music code here too if you want)
+  }
+
+  function closeLetter(){
+    document.getElementById("letter").classList.remove("active");
+    stopAuto();
+  }
+</script>
+<script>
+  const music = document.getElementById("bg-music");
+  const btn = document.getElementById("music-btn");
+
+  function toggleMusic() {
+    if (music.paused) {
+      music.play();
+      btn.textContent = "🔊";   // change to mute icon
+    } else {
+      music.pause();
+      btn.textContent = "🔇";   // change back to speaker
+    }
+  }
+</script>
+
+</body>
+</html>
